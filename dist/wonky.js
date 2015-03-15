@@ -21,6 +21,12 @@ Wonky = (function(){
         return sample;
     }
 
+    // Notes to future Rikk:
+    // A better pattern for general distribution factories is a functor that
+    // takes as its arguments a cdf and a range/candidate function. This would
+    // not only streamline development of new distributions, but also provide an
+    // interface for user-defined distributions
+
     // Normal Distribution
     var normalFactory = function(mu, sigsq) {
         var mu = mu;
@@ -32,12 +38,12 @@ Wonky = (function(){
         }
 
         // Mapping from U(0,1) to a subset of the pdf's support, within
-        // four standard deviations
+        // six standard deviations
         var support = function(u){
             // Map from (0,1) -> (-1, 1)
             var std_range = (u * 2) - 1;
             // Map from Z to X
-            return (std_range * Math.sqrt(sigsq) * 4) + mu;
+            return (std_range * Math.sqrt(sigsq) * 6) + mu;
         }
 
         return {
