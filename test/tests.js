@@ -38,7 +38,12 @@ function sampleDistribution (distribution, mean_val, sd_val) {
     }
 }
 
-QUnit.module("Normal Distribution")
+QUnit.module("Wonky functors");
+QUnit.test("Factory Functor", function(assert){
+    assert.ok(false, "Pending"); //TODO: this!
+});
+
+QUnit.module("Normal Distribution");
 // Test if random standard normal distribution behaves as expected
 QUnit.test( "Random Standard Normal Distribution", function( assert ) {
 
