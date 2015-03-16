@@ -6,17 +6,6 @@ QUnit.assert.closeEnough = function(value, expected, margin, message) {
     this.push(diff < margin, value, expected, message);
 }
 
-function mean(sample) {
-    var sum = sample.reduce(function(a,b){ return a + b });
-    return sum / sample.length;
-}
-
-function sd(sample) {
-    var x_bar = mean(sample);
-    var squareDiffs = sample.map(function(x){ return Math.pow(x - x_bar, 2) });
-    return Math.sqrt(mean(squareDiffs));
-}
-
 function sampleDistribution (distribution, mean_val, sd_val) {
     var i, one_sd = 0.0, two_sd = 0.0, three_sd = 0.0;
     var mean_val = distribution.mean;
@@ -30,24 +19,32 @@ function sampleDistribution (distribution, mean_val, sd_val) {
     }
 
     return {
-        mean    : mean(sample),
-        sd      : sd(sample),
+        mean    : Stat.mean(sample),
+        sd      : Stat.sd(sample),
         one_sd  : one_sd / size,
         two_sd  : two_sd / size,
         three_sd: three_sd / size
     }
 }
 
-QUnit.module("Wonky functors");
-QUnit.test("Factory Functor", function(assert){
-    assert.ok(false, "Pending"); //TODO: this!
+
+QUnit.module("Stat functions");
+QUnit.test( "Basic statistics", function(assert) {
+
+    assert.equal(55552.5, Stat.mean([12345,67890,98765,43210]) , "Arithmetic mean");
+    assert.equal(31775.617322878246, Stat.sd([12345,67890,98765,43210]) ,"(Population) Standard Deviation");
 });
 
-QUnit.module("Normal Distribution");
+QUnit.test( "Advanced functions", function(assert) {
+    assert.equal(3628800, Stat.fact(10), "Factorial function");
+});
+
+
+QUnit.module("Distributions");
 // Test if random standard normal distribution behaves as expected
 QUnit.test( "Random Standard Normal Distribution", function( assert ) {
 
-    var stdnorm = Wonky.normal(0, 1);
+    var stdnorm = Dist.normal(0, 1);
     var sample = sampleDistribution( stdnorm, 0, 1);
     assert.closeEnough(sample.one_sd, 0.68, 0.02, "First SD ~ 0.68");
     assert.closeEnough(sample.two_sd, 0.95, 0.02, "Second SD ~ 0.95");
@@ -62,7 +59,7 @@ QUnit.test('Random Parametrised Normal Distribution', function( assert ) {
 
     var mean = 10.0;
     var sd = 2.5;
-    var parametricNormal = Wonky.normal(mean, Math.pow(sd,2));
+    var parametricNormal = Dist.normal(mean, Math.pow(sd,2));
     var sample = sampleDistribution( parametricNormal, 10, 2.5);
 
     assert.closeEnough(sample.one_sd, 0.68, 0.02, "First SD ~ 0.68");

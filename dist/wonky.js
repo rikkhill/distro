@@ -6,21 +6,109 @@
  *
  */
 
-Wonky = (function(){
 
-    // Statistical helper functions
+
+// Statistical functions
+Stat = (function(){
+
+    // arithmetic mean
     var mean = function(sample) {
         var sum = sample.reduce(function(a,b){ return a + b  });
         return sum / sample.length;
     }
 
+    // standard deviation
     var sd = function(sample) {
         var x_bar = mean(sample);
         var squareDiffs = sample.map(function(x){return Math.pow(x - x_bar,2)});
         return Math.sqrt(mean(squareDiffs));
     }
 
-    // TODO: Gamma function
+    // to_n
+    // returns an array of integers [1..n]
+    // One day we'll get proper range generators in JavaScript
+    var to_n = function(n) {
+        if(n < 1) {
+            return [];
+        }
+        return Array.apply(0, Array(n)).map(function(c,i,a){
+            return i + 1;
+        });
+    }
+
+    // factorial function
+    var fact = function(n) {
+        if(n == 0) {
+            return 1;
+        }
+
+        return to_n(n).reduce(function(a,b){
+            return a * b;
+        }, 1);
+    }
+
+    // TODO: binomial coefficient / choose
+
+    // Using the Lanczos approximation of the Gamma function
+    // We'll calculate a cached set of coefficients for a default gamma
+    // function, and then expose a method to change that precision if required
+
+    // For precomputing Lanczos coefficients
+    var lanczos_p = function(k, g){
+        var outer_term = Math.pow(-1, k) * Math.sqrt(2/Math.PI);
+        outer_term *= k * Math.exp(g);
+
+        var sig_term = 0;
+        to_n(k).forEach(function(j,i,range) {
+            var inner_term = Math.pow(-1, j);
+            inner_term *= fact(j + k - 1) / (fact(k - j) * fact(j));
+            inner_term *= Math.pow(Math.E / j + g + 0.5, j + 0.5);
+            sig_term += inner_term;
+        });
+        return outer_term * sig_term;
+    }
+
+    // return a Gamma function approximation of precision g
+    var makeGamma = function(g) {
+        // Ten terms of Lanczos coefficients to precision g
+        var c = [0].concat(to_n(9)).map(function(x) {
+           return lanczos_p(x, g);
+        });
+
+        console.log(c);
+
+        var gamma = function(x) {
+            z = x - 1;
+            var A_term = c[0]; // We'll sum the A_g term here
+            to_n(9).forEach(function(i, j, range) {
+                A_term += c[i] / (z + i);
+            });
+
+            var g_term = Math.sqrt(2 * Math.PI) * Math.pow(z + g + 0.5,z + 0.5);
+            g_term *= Math.exp(-z -g -0.5);
+
+            return g_term * A_term;
+        }
+
+        return gamma;
+    }
+
+
+
+
+    // Exposed methods
+    return {
+        mean    : mean,
+        sd      : sd,
+        fact    : fact,
+        gamma   : makeGamma(7),
+        setGamma: function(g) {self.gamma = makeGamma(g)},
+        to_n    : to_n
+    }
+})();
+
+// Distributions
+Dist = (function(){
 
     // General sampling algorithm for sample size n
     var sampler = function(n, pdf, support) {
@@ -37,8 +125,8 @@ Wonky = (function(){
 
     var distributionFactory = function(pdf, support) {
         var test_sample = sampler(10000, pdf, support);
-        var mu = mean(test_sample);
-        var sig = sd(test_sample);
+        var mu = Stat.mean(test_sample);
+        var sig = Stat.sd(test_sample);
 
         return {
             mean    : mu,
