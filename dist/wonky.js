@@ -49,50 +49,34 @@ Stat = (function(){
 
     // TODO: binomial coefficient / choose
 
-    // Using the Lanczos approximation of the Gamma function
-    // We'll calculate a cached set of coefficients for a default gamma
-    // function, and then expose a method to change that precision if required
-
-    // For precomputing Lanczos coefficients
-    var lanczos_p = function(k, g){
-        var outer_term = Math.pow(-1, k) * Math.sqrt(2/Math.PI);
-        outer_term *= k * Math.exp(g);
-
-        var sig_term = 0;
-        to_n(k).forEach(function(j,i,range) {
-            var inner_term = Math.pow(-1, j);
-            inner_term *= fact(j + k - 1) / (fact(k - j) * fact(j));
-            inner_term *= Math.pow(Math.E / j + g + 0.5, j + 0.5);
-            sig_term += inner_term;
-        });
-        return outer_term * sig_term;
-    }
-
-    // return a Gamma function approximation of precision g
-    var makeGamma = function(g) {
-        // Ten terms of Lanczos coefficients to precision g
-        var c = [0].concat(to_n(9)).map(function(x) {
-           return lanczos_p(x, g);
-        });
-
-        console.log(c);
-
-        var gamma = function(x) {
-            z = x - 1;
-            var A_term = c[0]; // We'll sum the A_g term here
-            to_n(9).forEach(function(i, j, range) {
-                A_term += c[i] / (z + i);
+    // Lanczos approximation (g=7, n=9) for the Gamma function
+    // Should be precise enough for most JavaScript float purposes
+    var gamma = function(z) {
+        var c = [
+            0.99999999999980993,
+            676.5203681218851,
+            -1259.1392167224028,
+            771.32342877765313,
+            -176.61502916214059,
+            12.507343278686905,
+            -0.13857109526572012,
+            9.9843695780195716e-6,
+            1.5056327351493116e-7
+            ];
+        g = 7;
+        if(z < 0.5) {
+            return Math.PI / (Math.sin(Math.PI * z) * gamma (1 - z));
+        } else {
+            z--;
+            var s = c[0];
+            to_n(8).forEach(function(i, j, a) {
+                s += c[i] / (z + i);
             });
 
-            var g_term = Math.sqrt(2 * Math.PI) * Math.pow(z + g + 0.5,z + 0.5);
-            g_term *= Math.exp(-z -g -0.5);
-
-            return g_term * A_term;
+            var t = z + g + 0.5;
+            return Math.sqrt(2 * Math.PI)*Math.pow(t, z + 0.5)*Math.exp(-t)*s;
         }
-
-        return gamma;
     }
-
 
 
 
@@ -101,7 +85,7 @@ Stat = (function(){
         mean    : mean,
         sd      : sd,
         fact    : fact,
-        gamma   : makeGamma(7),
+        gamma   : gamma,
         setGamma: function(g) {self.gamma = makeGamma(g)},
         to_n    : to_n
     }
@@ -113,7 +97,6 @@ Dist = (function(){
     // General sampling algorithm for sample size n
     var sampler = function(n, pdf, support) {
         var sample = [];
-        // TODO - web worker to run this asynchronously
         while(sample.length < n) {
             var candidate = support(Math.random());
             if(Math.random() <= pdf(candidate)) {

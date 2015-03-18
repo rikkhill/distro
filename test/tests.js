@@ -36,7 +36,28 @@ QUnit.test( "Basic statistics", function(assert) {
 });
 
 QUnit.test( "Advanced functions", function(assert) {
-    assert.equal(3628800, Stat.fact(10), "Factorial function");
+
+    var factorials  = [
+        1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800
+    ];
+
+    var calculated_factorials = [];
+    Array.apply(0, Array(11)).forEach(function(m,i,a) {
+        calculated_factorials.push(Stat.fact(i));
+    });
+    assert.deepEqual(factorials, calculated_factorials, "Factorial function");
+
+    var calculated_gammas = []
+    Array.apply(0, Array(11)).forEach(function(m,i,a) {
+                calculated_gammas.push(Stat.gamma(i + 1));
+    });
+
+    calculated_gammas = calculated_gammas.map(function(x){
+        return parseInt(parseFloat(x).toFixed(2));
+    });
+    assert.deepEqual(factorials, calculated_gammas, "Gamma functiion");
+
+
 });
 
 
