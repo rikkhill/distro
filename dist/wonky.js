@@ -49,6 +49,11 @@ Stat = (function(){
 
     // TODO: binomial coefficient / choose
 
+    // Binomial coefficient
+    var choose = function(n, k) {
+        return fact(n) / (fact(k) * fact(n - k));
+    }
+
     // Lanczos approximation (g=7, n=9) for the Gamma function
     // Should be precise enough for most JavaScript float purposes
     var gamma = function(z) {
@@ -85,8 +90,8 @@ Stat = (function(){
         mean    : mean,
         sd      : sd,
         fact    : fact,
+        choose  : choose,
         gamma   : gamma,
-        setGamma: function(g) {self.gamma = makeGamma(g)},
         to_n    : to_n
     }
 })();
@@ -149,40 +154,14 @@ Dist = (function(){
         }
     }
 
-    // Normal Distribution
-    var normalFactory = function(mu, sigsq) {
-        var mu = mu;
-        var sigsq = sigsq;
-        var pdf = function(x){
-            var normconst = (1/(Math.sqrt(sigsq * 2 * Math.PI)));
-            var core = Math.exp((-1/2)*Math.pow(((x - mu)/Math.sqrt(sigsq)),2));
-            return normconst * core;
-        }
-
-        // Mapping from U(0,1) to a subset of the pdf's support, within
-        // six standard deviations
-        var support = function(u){
-            // Map from (0,1) -> (-1, 1)
-            var std_range = (u * 2) - 1;
-            // Map from Z to X
-        }
-
-        return {
-            mean: mu,
-            variance: sigsq,
-            sd: Math.sqrt(sigsq),
-            sample: function(n) {
-                        return sampler(n, pdf, support);
-            }
-        }
-    }
-
     var help = {};
     var exposed_methods = {
         help    :   function(dist) {
                         return help[dist];
                     }
     };
+
+    // TODO: Easy wins: poisson, binomial, gamma, beta, uniform, t, M
 
     // Inject all distributions into exposed methods
     for (var d in distributions) {

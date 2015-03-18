@@ -32,7 +32,10 @@ QUnit.module("Stat functions");
 QUnit.test( "Basic statistics", function(assert) {
 
     assert.equal(55552.5, Stat.mean([12345,67890,98765,43210]) , "Arithmetic mean");
+
     assert.equal(31775.617322878246, Stat.sd([12345,67890,98765,43210]) ,"(Population) Standard Deviation");
+
+    assert.equal(120, Stat.choose(10,3), "Binomial coefficient");
 });
 
 QUnit.test( "Advanced functions", function(assert) {
@@ -57,13 +60,12 @@ QUnit.test( "Advanced functions", function(assert) {
     });
     assert.deepEqual(factorials, calculated_gammas, "Gamma functiion");
 
-
 });
 
 
 QUnit.module("Distributions");
 // Test if random standard normal distribution behaves as expected
-QUnit.test( "Random Standard Normal Distribution", function( assert ) {
+QUnit.test( "Standard Normal Distribution", function(assert) {
 
     var stdnorm = Dist.normal(0, 1);
     var sample = sampleDistribution( stdnorm, 0, 1);
@@ -76,7 +78,7 @@ QUnit.test( "Random Standard Normal Distribution", function( assert ) {
 });
 
 // Test if random general normal distribution behaves as expected
-QUnit.test('Random Parametrised Normal Distribution', function( assert ) {
+QUnit.test('Parametrised Normal Distribution', function(assert) {
 
     var mean = 10.0;
     var sd = 2.5;
@@ -89,4 +91,12 @@ QUnit.test('Random Parametrised Normal Distribution', function( assert ) {
 
     assert.closeEnough(sample.mean, mean, 0.06, "Mean ~ " + mean);
     assert.closeEnough(sample.sd, sd, 0.06, "Overall SD ~ " + sd);
+});
+
+// Test if Poisson distribution behaves as expected
+QUnit.skip('Poisson(10) distribution', function(assert) {
+
+    var lambda = 10;
+    var poisson = Dist.poisson(lambda);
+    // Check index of dispersion = 1
 });
