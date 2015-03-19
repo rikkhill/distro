@@ -47,8 +47,6 @@ Stat = (function(){
         }, 1);
     }
 
-    // TODO: binomial coefficient / choose
-
     // Binomial coefficient
     var choose = function(n, k) {
         return fact(n) / (fact(k) * fact(n - k));
@@ -92,7 +90,7 @@ Stat = (function(){
         fact    : fact,
         choose  : choose,
         gamma   : gamma,
-        to_n    : to_n
+        to_n    : to_n  // might not keep this exposed
     }
 })();
 
@@ -125,6 +123,25 @@ Dist = (function(){
         }
     }
 
+    // Support closures
+    // Standardised templates that map U(0,1) to a wide confidence interval
+    // for the support of a distribution
+
+    var symmetricContinuousRange = function(mean, spread) {
+        // e.g. (-inf, inf)
+        // `spread` should be roughly one standard deviation or equivalent
+        return function(u) {
+            return ( ( ( u * 2  ) - 1  ) * spread * 6   ) + mean;
+        }
+    }
+
+    var naturalNumbers = function(height) {
+        // y <- {0, 1...height}
+        // `height` should cover the bulk of the probability mass
+        return function(u) {
+            return Math.floor(u * height);
+        }
+    }
 
     // TODO: this is horrible. Make a dedicated distribution object that
     // instantiates from pdf and support, with optional summary statistics,
