@@ -156,13 +156,10 @@ Dist = (function(){
                     var core = Math.exp((-1/2) * Math.pow(((x - mu)/Math.sqrt(sigsq)),2));
                     return normconst * core;
                 }
-                var support = function(u) {
-                // Returns a value from N's support, within 6 SDs of the mean
-                    return ( ( ( u * 2  ) - 1  ) * Math.sqrt(sigsq) * 6  ) + mu;
-                }
+                var support = symmetricContinuousRange(mu, Math.sqrt(sigsq));
 
                 return {
-                    pdf: pdf,
+                    probFunc: pdf,
                     support: support
                 }
             },
@@ -185,7 +182,7 @@ Dist = (function(){
         var factory = function(args) {
             var parts = distributions[d].definition.apply(this, arguments);
             // `parts` is now a specific instance of a distribution
-            return distributionFactory(parts.pdf, parts.support);
+            return distributionFactory(parts.probFunc, parts.support);
         }
 
         var aliases = distributions[d].aliases;
