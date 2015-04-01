@@ -143,6 +143,22 @@ Dist = (function(){
         }
     }
 
+    // positive reals
+    var r_plus = function(height) {
+        // [1, inf)
+        return function(u) {
+            return (u * height) + 1;
+        }
+    }
+
+    // positive reals plus zero
+    var r_plus_zero = function(height) {
+        // [0, inf)
+        return function(u) {
+            return (u * height);
+        }
+    }
+
     // TODO: this is horrible. Make a dedicated distribution object that
     // instantiates from pdf and support, with optional summary statistics,
     // and if they're not included, the distributionFactory can infer them
