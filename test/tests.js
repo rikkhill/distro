@@ -36,14 +36,14 @@ function getThreeSigmas (sample, mean, sd) {
 QUnit.module("Stat functions");
 QUnit.test( "Basic statistics", function(assert) {
 
-    assert.equal(55552.5, Stat.mean([12345,67890,98765,43210]) , "Arithmetic mean");
+    assert.equal(Stat.mean([12345,67890,98765,43210]), 55552.5, "Arithmetic mean");
 
-    assert.equal(31775.617322878246, Stat.sd([12345,67890,98765,43210]) ,"(Population) Standard Deviation");
-
-    assert.equal(120, Stat.choose(10,3), "Binomial coefficient");
+    assert.equal(Stat.sd([12345,67890,98765,43210]), 31775.617322878246, "(Population) Standard Deviation");
 });
 
 QUnit.test( "Advanced functions", function(assert) {
+
+    assert.equal(Stat.choose(10,3), 120, "Binomial coefficient");
 
     var factorials  = [
         1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800
@@ -53,7 +53,7 @@ QUnit.test( "Advanced functions", function(assert) {
     Array.apply(0, Array(11)).forEach(function(m,i,a) {
         calculated_factorials.push(Stat.fact(i));
     });
-    assert.deepEqual(factorials, calculated_factorials, "Factorial function");
+    assert.deepEqual(calculated_factorials, factorials, "Factorial function");
 
     var calculated_gammas = []
     Array.apply(0, Array(11)).forEach(function(m,i,a) {
@@ -63,7 +63,7 @@ QUnit.test( "Advanced functions", function(assert) {
     calculated_gammas = calculated_gammas.map(function(x){
         return parseInt(parseFloat(x).toFixed(2));
     });
-    assert.deepEqual(factorials, calculated_gammas, "Gamma functiion");
+    assert.deepEqual(calculated_gammas, factorials, "Gamma functiion");
 
 });
 
@@ -102,9 +102,24 @@ QUnit.test('Parametrised Normal Distribution', function(assert) {
 });
 
 // Test if Poisson distribution behaves as expected
-QUnit.skip('Poisson(10) distribution', function(assert) {
+QUnit.test('Poisson(10) distribution', function(assert) {
 
     var lambda = 10;
     var poisson = Dist.poisson(lambda);
+    var sample = takeSample(poisson);
     // Check index of dispersion = 1
+    var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
+    assert.closeEnough(sample.mean, lambda, 0.05, "Mean ~ " + lambda);
+    assert.closeEnough(index_of_dispersion, 1, 0.1, "Index of dispersion ~ 1");
+});
+
+QUnit.test('Poisson(50) distribution', function(assert) {
+
+    var lambda = 50;
+    var poisson = Dist.poisson(lambda);
+    var sample = takeSample(poisson);
+    // Check index of dispersion = 1
+    var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
+    assert.closeEnough(sample.mean, lambda, 0.05, "Mean ~ " + lambda);
+    assert.closeEnough(index_of_dispersion, 1, 0.1, "Index of dispersion ~ 1");
 });

@@ -36,15 +36,18 @@ Stat = (function(){
         });
     }
 
-    // factorial function
+    // Recursive factorial function with memoization
+    var fact_cache = [1, 1];
     var fact = function(n) {
-        if(n == 0) {
+        if(n == 0 || n == 1) {
             return 1;
         }
 
-        return to_n(n).reduce(function(a,b){
-            return a * b;
-        }, 1);
+        if (typeof fact_cache[n] !== 'undefined') {
+            return fact_cache[n];
+        }
+
+        return fact_cache[n] = fact(n - 1) * n;
     }
 
     // Binomial coefficient
@@ -98,27 +101,28 @@ Stat = (function(){
 Dist = (function(){
 
     // General sampling algorithm for sample size n
-    var sampler = function(n, pdf, support) {
+    var sampler = function(n, prob, support) {
         var sample = [];
         while(sample.length < n) {
             var candidate = support(Math.random());
-            if(Math.random() <= pdf(candidate)) {
+            if(Math.random() <= prob(candidate)) {
                 sample.push(candidate);
             }
         }
         return sample;
     }
 
-    var distributionFactory = function(pdf, support) {
-        var test_sample = sampler(10000, pdf, support);
-        var mu = Stat.mean(test_sample);
-        var sig = Stat.sd(test_sample);
+    var distributionFactory = function(name, prob, support) {
+//        var test_sample = sampler(10000, prob, support);
+//        var mu = Stat.mean(test_sample);
+//        var sig = Stat.sd(test_sample);
 
         return {
-            mean    : mu,
-            sd      : sig,
+//            mean    : mu,
+//            sd      : sig,
+            name    : name,
             sample  : function(n) {
-                return sampler(n, pdf, support);
+                return sampler(n, prob, support);
             }
         }
     }
@@ -159,11 +163,8 @@ Dist = (function(){
         }
     }
 
-    // TODO: this is horrible. Make a dedicated distribution object that
-    // instantiates from pdf and support, with optional summary statistics,
-    // and if they're not included, the distributionFactory can infer them
-
-    // Object containing pdf, support help and aliases for distributions
+    // Object containing probability density/mass function,
+    // support, help and aliases for distributions
     var distributions = {
         normal  : {
             definition  : function(mu, sigsq) {
@@ -175,12 +176,29 @@ Dist = (function(){
                 var support = symmetricContinuousRange(mu, Math.sqrt(sigsq));
 
                 return {
+                    name: "Normal",
                     probFunc: pdf,
                     support: support
                 }
             },
             help    : "Normal distribution N(mean, variance)",
             aliases : ['N'],
+        },
+        poisson : {
+            definition  : function(lambda) {
+                var pmf = function(x) {
+                    return (Math.exp(-lambda) * Math.pow(lambda, x)) / Stat.fact(x);
+                }
+                var support = naturalNumbers(lambda * 5);
+
+                return {
+                    name: "poisson",
+                    probFunc: pmf,
+                    support: support
+                }
+            },
+            help    : "Poisson distribution Poisson(lambda)",
+            aliases : ['Poisson'],
         }
     }
 
@@ -191,24 +209,24 @@ Dist = (function(){
                     }
     };
 
-    // TODO: Easy wins: poisson, binomial, gamma, beta, uniform, t, M
-
+    // TODO: Easy wins: binomial, gamma, beta, uniform, t, M
     // Inject all distributions into exposed methods
     for (var d in distributions) {
-        var factory = function(args) {
-            var parts = distributions[d].definition.apply(this, arguments);
-            // `parts` is now a specific instance of a distribution
-            return distributionFactory(parts.probFunc, parts.support);
-        }
+        // Factory-calling closure
+        var factory = function(distribution){
+            return function(args) {
+                var parts = distribution.definition.apply(undefined, arguments);
+                return distributionFactory(parts.name, parts.probFunc, parts.support);
+                }
+        };
 
         var aliases = distributions[d].aliases;
-        exposed_methods[d] = factory;
+        exposed_methods[d] = factory(distributions[d]);
         for (var a in aliases) {
-            exposed_methods[aliases[a]] = factory;
+            exposed_methods[aliases[a]] = factory(distributions[d]);
         }
 
         help[d] = distributions[d].help;
     }
-
     return exposed_methods;
 })();
