@@ -109,8 +109,8 @@ QUnit.test('Poisson(10) distribution', function(assert) {
     var sample = takeSample(poisson);
     // Check index of dispersion = 1
     var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
-    assert.closeEnough(sample.mean, lambda, 0.05, "Mean ~ " + lambda);
-    assert.closeEnough(index_of_dispersion, 1, 0.1, "Index of dispersion ~ 1");
+    assert.closeEnough(sample.mean, lambda, 0.12, "Mean ~ " + lambda);
+    assert.closeEnough(index_of_dispersion, 1, 0.04, "Index of dispersion ~ 1");
 });
 
 QUnit.test('Poisson(50) distribution', function(assert) {
@@ -120,6 +120,26 @@ QUnit.test('Poisson(50) distribution', function(assert) {
     var sample = takeSample(poisson);
     // Check index of dispersion = 1
     var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
-    assert.closeEnough(sample.mean, lambda, 0.05, "Mean ~ " + lambda);
-    assert.closeEnough(index_of_dispersion, 1, 0.1, "Index of dispersion ~ 1");
+    assert.closeEnough(sample.mean, lambda, 0.12, "Mean ~ " + lambda);
+    assert.closeEnough(index_of_dispersion, 1, 0.04, "Index of dispersion ~ 1");
+});
+
+QUnit.test('Binomial(40, 0.6) distribution', function(assert) {
+
+    var n = 40, p = 0.6;
+    var binom = Dist.B(n, p);
+    var sample = takeSample(binom);
+    console.log(sample);
+    // Check MLE
+    assert.closeEnough(sample.mean/n, p, 0.02, "Mean / n ~ " + p);
+});
+
+QUnit.test('Binomial(12, 0.05) distribution', function(assert) {
+
+    var n = 12, p = 0.05;
+    var binom = Dist.B(n, p);
+    var sample = takeSample(binom);
+    console.log(sample);
+    // Check MLE
+    assert.closeEnough(sample.mean/n, p, 0.02, "Mean / n ~ " + p);
 });

@@ -199,6 +199,22 @@ Dist = (function(){
             },
             help    : "Poisson distribution Poisson(lambda)",
             aliases : ['Poisson'],
+        },
+        binomial : {
+            definition: function(n, p) {
+                var pmf = function(x) {
+                    return Stat.choose(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x);
+                }
+                var support = naturalNumbers(n);
+
+                return {
+                    name: "binomial",
+                    probFunc: pmf,
+                    support: support
+                }
+            },
+            help    : "Binomial distribution B(n, p)",
+            aliases : ['B']
         }
     }
 
