@@ -7,3 +7,4 @@ Currently implemented distributions:
 
 - Normal
 - Poisson
+- Binomial

@@ -163,6 +163,13 @@ Dist = (function(){
         }
     }
 
+    // U(0, 1) continuous (a bit silly)
+    var u_0_1 = function() {
+        return function(u) {
+            return u;
+        }
+    }
+
     // Object containing probability density/mass function,
     // support, help and aliases for distributions
     var distributions = {
@@ -215,6 +222,18 @@ Dist = (function(){
             },
             help    : "Binomial distribution B(n, p)",
             aliases : ['B']
+        },
+        beta    : {
+            definition: function(a, b) {
+                var pdf = function(x) {
+                    var constant = Stat.gamma(a + b) / (Stat.gamma(a) * Stat.gamma(b));
+                    var core = Math.pow(x, a - 1) * Math.pow(1 - x, b - 1);
+                    return constant * core;
+                }
+                var support = u_0_1;
+            },
+            help    : "Beta distribution Beta(a, b)",
+            aliases : ['Beta']
         }
     }
 
@@ -225,7 +244,7 @@ Dist = (function(){
                     }
     };
 
-    // TODO: Easy wins: binomial, gamma, beta, uniform, t, M
+    // TODO: Easy wins: gamma, beta, uniform, t, M
     // Inject all distributions into exposed methods
     for (var d in distributions) {
         // Factory-calling closure

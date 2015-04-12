@@ -129,8 +129,7 @@ QUnit.test('Binomial(40, 0.6) distribution', function(assert) {
     var n = 40, p = 0.6;
     var binom = Dist.B(n, p);
     var sample = takeSample(binom);
-    console.log(sample);
-    // Check MLE
+    // Check MLE of p
     assert.closeEnough(sample.mean/n, p, 0.02, "Mean / n ~ " + p);
 });
 
@@ -139,7 +138,14 @@ QUnit.test('Binomial(12, 0.05) distribution', function(assert) {
     var n = 12, p = 0.05;
     var binom = Dist.B(n, p);
     var sample = takeSample(binom);
-    console.log(sample);
-    // Check MLE
+    // Check MLE of p
     assert.closeEnough(sample.mean/n, p, 0.02, "Mean / n ~ " + p);
+});
+
+QUnit.skip('Beta(0.5, 0,5) distribution', function(assert) {
+
+    var a = 0.5, b = 0.5;
+    var beta = Dist.beta(a, b);
+    var sample = takeSample(beta);
+    //TODO: this test; geometric mean
 });
