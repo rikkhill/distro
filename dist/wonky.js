@@ -230,7 +230,13 @@ Dist = (function(){
                     var core = Math.pow(x, a - 1) * Math.pow(1 - x, b - 1);
                     return constant * core;
                 }
-                var support = u_0_1;
+                var support = u_0_1();
+
+                return{
+                    name: "beta",
+                    probFunc: pdf,
+                    support: support
+                }
             },
             help    : "Beta distribution Beta(a, b)",
             aliases : ['Beta']
