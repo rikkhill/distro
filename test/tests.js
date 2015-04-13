@@ -110,7 +110,7 @@ QUnit.test('Poisson(10) distribution', function(assert) {
     // Check index of dispersion = 1
     var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
     assert.closeEnough(sample.mean, lambda, 0.12, "Mean ~ " + lambda);
-    assert.closeEnough(index_of_dispersion, 1, 0.04, "Index of dispersion ~ 1");
+    assert.closeEnough(index_of_dispersion, 1, 0.05, "Index of dispersion ~ 1");
 });
 
 QUnit.test('Poisson(50) distribution', function(assert) {
@@ -121,7 +121,7 @@ QUnit.test('Poisson(50) distribution', function(assert) {
     // Check index of dispersion = 1
     var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
     assert.closeEnough(sample.mean, lambda, 0.12, "Mean ~ " + lambda);
-    assert.closeEnough(index_of_dispersion, 1, 0.04, "Index of dispersion ~ 1");
+    assert.closeEnough(index_of_dispersion, 1, 0.05, "Index of dispersion ~ 1");
 });
 
 QUnit.test('Binomial(40, 0.6) distribution', function(assert) {
@@ -162,6 +162,6 @@ QUnit.test('Beta(12, 20) distribution', function(assert) {
     var x_bar = sample.mean;
     var v_bar = Math.pow(sample.sd, 2);
 
-    assert.closeEnough(x_bar, a / (a + b), 0.06, "Mean is about right");
-    assert.closeEnough(v_bar, (a * b) / ( Math.pow(a + b, 2) * (a + b + 1) ), 0.06, "Variance is about right");
+    assert.closeEnough(x_bar, a / (a + b), 0.01, "Mean is about right");
+    assert.closeEnough(v_bar, (a * b) / ( Math.pow(a + b, 2) * (a + b + 1) ), 0.01, "Variance is about right");
 });
