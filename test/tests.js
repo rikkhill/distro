@@ -142,33 +142,26 @@ QUnit.test('Binomial(12, 0.05) distribution', function(assert) {
     assert.closeEnough(sample.mean/n, p, 0.02, "Mean / n ~ " + p);
 });
 
-// MLEs for beta parameters
-var beta_a = function(mean, variance) {
-    return mean * ( ((mean * (1 - mean))/variance) - 1  );
-}
+QUnit.test('Beta(0.5, 0.5) distribution', function(assert) {
 
-var beta_b = function(mean, variance) {
-    return (1 - mean) * (((mean * (1 - mean))/variance) - 1);
-}
-
-QUnit.test('Beta(2, 2) distribution', function(assert) {
-
-    var a = 2, b = 2;
+    var a = 0.5, b = 0.5;
     var beta = Dist.beta(a, b);
     var sample = takeSample(beta);
-    var a_estimate = beta_a(sample.mean, Math.pow(sample.sd, 2));
-    var b_estimate = beta_b(sample.mean, Math.pow(sample.sd, 2));
-    assert.closeEnough(a_estimate, a, 0.06, "parameter a estimate is okay");
-    assert.closeEnough(b_estimate, b, 0.06, "parameter b estimate is okay");
+    var x_bar = sample.mean;
+    var v_bar = Math.pow(sample.sd, 2);
+
+    assert.closeEnough(x_bar, a / (a + b), 0.06, "Mean is about right");
+    assert.closeEnough(v_bar, (a * b) / ( Math.pow(a + b, 2) * (a + b + 1) ), 0.06, "Variance is about right");
 });
 
-QUnit.test('Beta(5, 12) distribution', function(assert) {
+QUnit.test('Beta(12, 20) distribution', function(assert) {
 
-    var a = 5, b = 12;
+    var a = 12, b = 20;
     var beta = Dist.beta(a, b);
     var sample = takeSample(beta);
-    var a_estimate = beta_a(sample.mean, Math.pow(sample.sd, 2));
-    var b_estimate = beta_b(sample.mean, Math.pow(sample.sd, 2));
-    assert.closeEnough(a_estimate, a, 0.06, "parameter a estimate is okay");
-    assert.closeEnough(b_estimate, b, 0.06, "parameter b estimate is okay");
+    var x_bar = sample.mean;
+    var v_bar = Math.pow(sample.sd, 2);
+
+    assert.closeEnough(x_bar, a / (a + b), 0.06, "Mean is about right");
+    assert.closeEnough(v_bar, (a * b) / ( Math.pow(a + b, 2) * (a + b + 1) ), 0.06, "Variance is about right");
 });
