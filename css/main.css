@@ -1,0 +1,22 @@
+/*
+ *
+ * CSS for wonky.js demo
+ *
+ */
+
+/* d3 style */
+
+.bar rect {
+    fill: crimson;
+    shape-rendering: crispEdges;
+}
+
+.bar text {
+    fill: #ffffff;
+}
+
+.axis path, .axis line {
+    fill: none;
+    stroke: #000000;
+    shape-rendering: crispEdges;
+}

@@ -3,16 +3,17 @@
         <script type='text/javascript' src='./js/main.js'></script>
         <script type='text/javascript' src='./js/d3.min.js'></script>
         <script type='text/javascript' src='./dist/wonky.js'></script>
+        <link rel="stylesheet" type="text/css" href="./css/main.css" />
     </head>
     <body>
         Testing, testing, testing...
         <div id='histo' style="width: 400; height: 300; border: 1pt solid black;"></div>
         <script type='text/javascript'>
 
-            var data = Dist.normal(5, 2).sample(2000);
+           var data = Dist.B(10, 0.4).sample(2000);
             var elem = document.getElementById("histo");
             var h = histogram(elem);
-            h.plot(data, [0, 20]);
+            h.plot(data, [0, 10]);
 
 
         </script>

@@ -17,12 +17,8 @@ var histogram = function(element) {
         left: 30
     }
 
-console.log(element);
-
     var width = element.offsetWidth - margin.left - margin.right;
     var height = element.offsetHeight - margin.top - margin.bottom;
-
-console.log("dims:", width, height);
 
     this.plot = function(data, x_domain) {
 
@@ -37,17 +33,20 @@ console.log("dims:", width, height);
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var bar = container.selectAll("rect").data(binned_data);
+        var bar = container.selectAll(".bar").data(binned_data);
         bar.exit().remove();
         bar.enter().append("g")
+            .attr("class", "bar")
             .attr("transform", function(d) { return "translate(" + x_scale(d.x) + "," + y_scale(d.y) + ")";  });
 
         bar.append("rect")
+            .attr("x", 1)
             .attr("width", x_scale(binned_data[0].dx) - 1)
             .attr("height", function(d) { return height - y_scale(d.y) });
 
         x_axis = d3.svg.axis().scale(x_scale).orient("bottom");
         container.append("g")
+            .attr("class", "axis")
             .attr("transform", "translate(0," + height + ")")
             .call(x_axis);
     }
