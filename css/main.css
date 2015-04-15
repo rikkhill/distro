@@ -7,7 +7,7 @@
 /* d3 style */
 
 .bar rect {
-    fill: crimson;
+    fill: indianred;
     shape-rendering: crispEdges;
 }
 
