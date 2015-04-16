@@ -113,13 +113,8 @@ Dist = (function(){
     }
 
     var distributionFactory = function(name, prob, support) {
-//        var test_sample = sampler(10000, prob, support);
-//        var mu = Stat.mean(test_sample);
-//        var sig = Stat.sd(test_sample);
 
         return {
-//            mean    : mu,
-//            sd      : sig,
             name    : name,
             sample  : function(n) {
                 return sampler(n, prob, support);
@@ -250,7 +245,7 @@ Dist = (function(){
                     }
     };
 
-    // TODO: Easy wins: gamma, beta, uniform, t, M
+    // TODO: gamma, t, M, Laplace, geometric
     // Inject all distributions into exposed methods
     for (var d in distributions) {
         // Factory-calling closure
