@@ -257,6 +257,22 @@ Dist = (function(){
             },
             help    : "Gamma distribution Gamma(alpha, beta)",
             aliases : ["Gamma"]
+        },
+        exponential : {
+            definition: function(lambda) {
+                var pdf = function(x) {
+                    return lambda * Math.exp(-lambda * x);
+                }
+                var support = r_plus_zero(5 * (1 / lambda));
+
+                return {
+                    name: "exponential",
+                    probFunc: pdf,
+                    support: support
+                }
+            },
+            help    : "Exponential distribution M(lambda)",
+            aliases : ["M"]
         }
     }
 
@@ -267,7 +283,7 @@ Dist = (function(){
                     }
     };
 
-    // TODO: t, M, Laplace, geometric
+    // TODO: t, Laplace, geometric
     // Inject all distributions into exposed methods
     for (var d in distributions) {
         // Factory-calling closure

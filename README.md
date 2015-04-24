@@ -10,3 +10,4 @@ Currently implemented distributions:
 - Binomial
 - Beta
 - Gamma
+- Exponential

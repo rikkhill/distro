@@ -180,3 +180,12 @@ QUnit.test("Gamma(10, 2) Distribution", function(assert) {
     assert.closeEnough(x_bar, alpha / beta, 0.1, "Mean is about right");
     assert.closeEnough(v_bar, alpha / (beta * beta), 0.1, "Variance is about right");
 });
+
+QUnit.test("Exponential M(1.5) Distribution", function(assert) {
+    var lambda = 1.5;
+    var exp = Dist.M(lambda);
+    var sample = takeSample(exp);
+    var x_bar = sample.mean;
+
+    assert.closeEnough(x_bar, 1 / lambda, 0.05, "Mean is about right");
+});
