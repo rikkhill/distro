@@ -103,12 +103,15 @@ Dist = (function(){
     // General sampling algorithm for sample size n
     var sampler = function(n, prob, support) {
         var sample = [];
+        //var wastage = 0;
         while(sample.length < n) {
             var candidate = support(Math.random());
+            //console.log(candidate, prob(candidate));
             if(Math.random() <= prob(candidate)) {
                 sample.push(candidate);
-            }
+            } //else { wastage++; }
         }
+        // console.log("Wastage: ", wastage/n);
         return sample;
     }
 
@@ -130,7 +133,7 @@ Dist = (function(){
         // e.g. (-inf, inf)
         // `spread` should be roughly one standard deviation or equivalent
         return function(u) {
-            return ( ( ( u * 2  ) - 1  ) * spread * 6   ) + mean;
+            return ( ( ( u * 2  ) - 1  ) * spread * 5.5 ) + mean;
         }
     }
 
@@ -191,7 +194,7 @@ Dist = (function(){
                 var pmf = function(x) {
                     return (Math.exp(-lambda) * Math.pow(lambda, x)) / Stat.fact(x);
                 }
-                var support = naturalNumbers(lambda * 5);
+                var support = naturalNumbers(lambda * 4);
 
                 return {
                     name: "poisson",
@@ -227,7 +230,7 @@ Dist = (function(){
                 }
                 var support = u_0_1();
 
-                return{
+                return {
                     name: "beta",
                     probFunc: pdf,
                     support: support
@@ -235,6 +238,25 @@ Dist = (function(){
             },
             help    : "Beta distribution Beta(a, b)",
             aliases : ['Beta']
+        },
+        gamma   : {
+            definition: function(alpha, beta) {
+                var pdf = function(x) {
+                    var constant = Math.pow(beta, alpha) / Stat.gamma(alpha);
+                    var core = Math.pow(x, alpha - 1) * Math.exp(-beta * x);
+                    return constant * core;
+                }
+                // Something about this support function is non-performant
+                var support = r_plus_zero((5 * alpha)/(beta * beta));
+
+                return {
+                    name: "gamma",
+                    probFunc: pdf,
+                    support: support
+                }
+            },
+            help    : "Gamma distribution Gamma(alpha, beta)",
+            aliases : ["Gamma"]
         }
     }
 
@@ -245,7 +267,7 @@ Dist = (function(){
                     }
     };
 
-    // TODO: gamma, t, M, Laplace, geometric
+    // TODO: t, M, Laplace, geometric
     // Inject all distributions into exposed methods
     for (var d in distributions) {
         // Factory-calling closure

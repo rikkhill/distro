@@ -9,3 +9,4 @@ Currently implemented distributions:
 - Poisson
 - Binomial
 - Beta
+- Gamma

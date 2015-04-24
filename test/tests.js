@@ -1,4 +1,7 @@
 // Tests for dots.js
+// I can probably refactor this once I've got a comprehensive
+// suite of distributions. There may be some sensible scheme by which
+// we can test all distributions for obvious wrongness
 
 // Custom assert for checking if values fall within error margins
 QUnit.assert.closeEnough = function(value, expected, margin, message) {
@@ -109,7 +112,7 @@ QUnit.test('Poisson(10) distribution', function(assert) {
     var sample = takeSample(poisson);
     // Check index of dispersion = 1
     var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
-    assert.closeEnough(sample.mean, lambda, 0.12, "Mean ~ " + lambda);
+    assert.closeEnough(sample.mean, lambda, 0.15, "Mean ~ " + lambda);
     assert.closeEnough(index_of_dispersion, 1, 0.05, "Index of dispersion ~ 1");
 });
 
@@ -120,7 +123,7 @@ QUnit.test('Poisson(50) distribution', function(assert) {
     var sample = takeSample(poisson);
     // Check index of dispersion = 1
     var index_of_dispersion = Math.pow(Stat.sd(sample.values), 2) / Stat.mean(sample.values);
-    assert.closeEnough(sample.mean, lambda, 0.12, "Mean ~ " + lambda);
+    assert.closeEnough(sample.mean, lambda, 0.15, "Mean ~ " + lambda);
     assert.closeEnough(index_of_dispersion, 1, 0.05, "Index of dispersion ~ 1");
 });
 
@@ -164,4 +167,16 @@ QUnit.test('Beta(12, 20) distribution', function(assert) {
 
     assert.closeEnough(x_bar, a / (a + b), 0.01, "Mean is about right");
     assert.closeEnough(v_bar, (a * b) / ( Math.pow(a + b, 2) * (a + b + 1) ), 0.01, "Variance is about right");
+});
+
+QUnit.test("Gamma(10, 2) Distribution", function(assert) {
+
+    var alpha = 10, beta = 2;
+    var gamma = Dist.gamma(alpha, beta);
+    var sample = takeSample(gamma);
+    var x_bar = sample.mean;
+    var v_bar = Math.pow(sample.sd, 2);
+
+    assert.closeEnough(x_bar, alpha / beta, 0.1, "Mean is about right");
+    assert.closeEnough(v_bar, alpha / (beta * beta), 0.1, "Variance is about right");
 });
