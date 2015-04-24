@@ -11,9 +11,9 @@
         <div id='histo' style="width: 300; height: 300; border: 1pt solid black;"></div>
         <script type='text/javascript'>
 
-           var data = Dist.B(10, 0.4).sample(100);
+            var data = Dist.M(0.4).sample(1000);
             var elem = document.getElementById("histo");
-            var h = histogram(elem, [0, 10], 10);
+            var h = histogram(elem, [0, 20], 19);
             h.plot(data);
 
 

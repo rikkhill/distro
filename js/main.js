@@ -23,6 +23,8 @@ var histogram = function(element, x_domain, bins) {
     var y_scale = d3.scale.linear().domain([0, 1]).range([height, 0]);
     var x_scale = d3.scale.linear().domain(domain).range([0, width]);
 
+
+
     var bin_data = d3.layout.histogram()
         .bins(x_scale.ticks(bins))
         .frequency(false);
@@ -49,14 +51,22 @@ var histogram = function(element, x_domain, bins) {
         var hist_data = bin_data(data);
         var bar = container.selectAll(".bar").data(hist_data);
 
+        var width = (x_scale.range()[1] - x_scale.range()[0])/hist_data.length -1;
+
+        var biggest_bin = d3.max(hist_data, function(c) {return c.length});
+        var scale_height =  1.2 * (biggest_bin / data.length);
+
+        // Readjust y_scale on each plot
+        y_scale = d3.scale.linear().domain([0, scale_height]).range([height, 0]);
+
         bar.enter().append("g")
             .attr("class", "bar")
             .attr("transform", function(d) { return "translate(" + x_scale(d.x) + "," + y_scale(d.y) + ")";  });
 
         bar.append("rect")
             .attr("x", 1)
-            .attr("width", x_scale(1) - 1)
-            .attr("height", function(d) { return height - y_scale(d.y) });
+            .attr("width", width)
+            .attr("height", function(d) { return height - y_scale(d.y); });
     }
 
     return {
