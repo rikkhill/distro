@@ -11,3 +11,18 @@ Currently implemented distributions:
 - Beta
 - Gamma
 - Exponential
+
+Example usage:
+
+```javascript
+// Standard normal
+normDist = Dist.N(0, 1)
+// 10 random samples from standard normal
+sample = normDist.sample(10)
+
+// Binomial distribution, 10 trials, p=0.5
+binomDist = Dist.B(10, 0.5)
+// Sample once
+successes = binomDist(1)
+
+```
