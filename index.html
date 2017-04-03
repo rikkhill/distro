@@ -2,19 +2,26 @@
     <head>
         <script type='text/javascript' src='./js/main.js'></script>
         <script type='text/javascript' src='./js/d3.min.js'></script>
-        <script type='text/javascript' src='./js/jquery.min.js'></script>
         <script type='text/javascript' src='./dist/wonky.js'></script>
         <link rel="stylesheet" type="text/css" href="./css/main.css" />
     </head>
     <body>
-        Histogram for 1000 samples from Exponential distribution, lambda=0.4
-        <div id='histo' style="width: 300; height: 300; border: 1pt solid black;"></div>
+        <p>Histogram for 1000 samples from Exponential distribution, lambda=0.4</p>
+        <div id='expo' style="width: 500; height: 300; border: 1pt solid black;"></div>
+
+        <p>Histogram for 1000 samples from Binomial distribution, n=10, p=0.3</p>
+        <div id='binom' style="width: 500; height: 300; border: 1pt solid black;"></div>
         <script type='text/javascript'>
 
             var data = Dist.M(0.4).sample(1000);
-            var elem = document.getElementById("histo");
+            var elem = document.getElementById("expo");
             var h = histogram(elem, [0, 20], 19);
             h.plot(data);
+
+            var data = Dist.binomial(10, 0.3).sample(1000);
+            var elem = document.getElementById("binom");
+            var i = histogram(elem, [0, 10], 10);
+            i.plot(data);
 
 
         </script>
