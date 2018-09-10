@@ -1,6 +1,8 @@
 # wonky
 Rejection sampling for common probability distributions in JavaScript.
 
+**Note to time-travellers from the future: this is old, but I keep it around because I like it. It is not how anyone writes javascript any more**
+
 I have occasionally needed values sampled from a specific distribution in JavaScript, but haven't found any lightweight libraries for doing this. wonky.js implements rejection sampling for common probability distributions (including various members of the natural exponential family, for which inverse transform sampling won't work).
 
 Currently implemented distributions:
